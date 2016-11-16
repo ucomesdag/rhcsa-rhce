@@ -1,0 +1,52 @@
+#!/bin/sh
+
+systemctl enable firewalld
+systemctl start firewalld
+
+firewall-cmd --add-masquerade --permanent; firewall-cmd --reload
+
+echo "172.25.0.254 classroom.example.com classroom" > /etc/hosts
+
+yum install -y ipa-server ipa-server-dns
+
+yum install -y rng-tools
+rngd -r /dev/urandom
+
+ipa-server-install \
+    --domain=example.com \
+    --realm=EXAMPLE.COM \
+    --ds-password=password \
+    --admin-password=password \
+    --hostname=classroom.example.com \
+    --setup-dns \
+    --allow-zone-overlap \
+    --forwarder=8.8.8.8 \
+    --reverse-zone=0.25.172.in-addr.arpa. \
+    --unattended
+
+for i in http https ldap ldaps kerberos kpasswd dns ntp; do
+    firewall-cmd --permanent --add-service $i;
+done
+firewall-cmd --reload
+
+yum install -y vsftpd
+systemctl enable vsftpd
+systemctl start vsftpd
+
+firewall-cmd --add-service ftp --permanent; firewall-cmd --reload
+
+cp /root/cacert.p12 /var/ftp/pub
+
+echo -n 'password' | kinit admin
+ipa user-add lisa --first=lisa --last=jones
+echo 'password' | ipa passwd lisa
+ipa user-add linda --first=linda --last=thomsen
+echo 'password' | ipa passwd linda
+
+ipa host-add server.example.com --ip-address=172.25.0.11
+ipa host-add desktop.example.com --ip-address=172.25.0.10
+ipa service-add nfs/server.example.com
+ipa-getkeytab -s classroom.example.com -p nfs/server.example.com@EXAMPLE.COM -k /var/ftp/pub/server.keytab
+ipa-getkeytab -s classroom.example.com -p host/desktop.example.com@EXAMPLE.COM -k /var/ftp/pub/desktop.keytab
+
+chmod +r /var/ftp/pub/*.keytab

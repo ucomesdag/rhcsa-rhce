@@ -1,0 +1,11 @@
+#!/bin/sh
+
+yum install -y ipa-client
+
+while ! (echo > /dev/tcp/classroom/389) >/dev/null 2>&1; do
+    echo "ipa server not ready yet - waiting for 10s"
+    sleep 10
+done
+
+ipa-client-install --mkhomedir --enable-dns-updates --force-ntpd -p admin@EXAMPLE.COM --password='password' --force-join -U
+echo -n 'password' | kinit admin
