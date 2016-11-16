@@ -27,6 +27,21 @@ Vagrant.configure(2) do |config|
     if Vagrant.has_plugin?('vagrant-registration')
         config.registration.username = ENV['SUBSCRIPTION_USERNAME']
         config.registration.password = ENV['SUBSCRIPTION_PASSWORD']
+        if ! config.registration.username or ! config.registration.password
+          puts "+-----------------------------------------------------------------------------+"
+          puts "|    The VM guest is set to a RHEL box, to continue a Red Hat subscription    |"
+          puts "|                               is required !!!                               |"
+          puts "+-----------------------------------------------------------------------------+"
+          puts
+          puts " You can use the environment variables 'SUBSCRIPTION_USERNAME' and"
+          puts " 'SUBSCRIPTION_PASSWORD' to set them."
+          puts
+          puts " Example:"
+          puts "   export SUBSCRIPTION_USERNAME='UserName' SUBSCRIPTION_PASSWORD='Password'"
+          puts
+          puts
+          exit 1
+        end
     end
   end
 
