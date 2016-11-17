@@ -43,7 +43,7 @@ Or else acces it via the GUI on the VM `desktop.example.com`
 
 Edit the `Vagrantfile` and modify `config.vm.box`.
 
-Also the following environment variables can be set:
+Also the following environment variables can be set instead of editing the `Vagrantfile`:
 `SUBSCRIPTION_USERNAME`, `SUBSCRIPTION_PASSWORD`, `VBOX_VM_PATH`, `LIBVIRT_STORAGE_POOL`
 
 ### CentOS version:

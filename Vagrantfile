@@ -4,10 +4,14 @@
 Vagrant.configure(2) do |config|
 
   # Path where the extra disks should be stored when using VirtualBox
-  vbox_vm_path = "./" # VirtualBox ONLY!
+  vbox_vm_path = "" # VirtualBox ONLY!
 
   # Storage pool where the extra disks should be stored when using libVirt
-  libvirt_storage_pool = "user" # libVirt ONLY!
+  libvirt_storage_pool = "" # libVirt ONLY!
+
+  # Red Hat subscription credentials if you choose to use a RHEL box.
+  rh_user   = ""
+  rh_passwd = ""
 
   # Memory configuration
   classroom_memory = 2048 # Recommended: 2048 MiB / Minimum: 512 MiB
@@ -25,23 +29,28 @@ Vagrant.configure(2) do |config|
     conname = "eth1"
     devname = "eth1"
     if Vagrant.has_plugin?('vagrant-registration')
+      if rh_user == "" or rh_passwd == ""
         config.registration.username = ENV['SUBSCRIPTION_USERNAME']
         config.registration.password = ENV['SUBSCRIPTION_PASSWORD']
-        if ! config.registration.username or ! config.registration.password
-          puts "+-----------------------------------------------------------------------------+"
-          puts "|    The VM guest is set to a RHEL box, to continue a Red Hat subscription    |"
-          puts "|                               is required !!!                               |"
-          puts "+-----------------------------------------------------------------------------+"
-          puts
-          puts " You can use the environment variables 'SUBSCRIPTION_USERNAME' and"
-          puts " 'SUBSCRIPTION_PASSWORD' to set them."
-          puts
-          puts " Example:"
-          puts "   export SUBSCRIPTION_USERNAME='UserName' SUBSCRIPTION_PASSWORD='Password'"
-          puts
-          puts
-          exit 1
-        end
+      else
+        config.registration.username = rh_user
+        config.registration.password = rh_passwd
+      end
+      if ! config.registration.username or ! config.registration.password
+        puts "+-----------------------------------------------------------------------------+"
+        puts "|    The VM guest is set to a RHEL box, to continue a Red Hat subscription    |"
+        puts "|                               is required !!!                               |"
+        puts "+-----------------------------------------------------------------------------+"
+        puts
+        puts " You can use the environment variables 'SUBSCRIPTION_USERNAME' and"
+        puts " 'SUBSCRIPTION_PASSWORD' to set your credentials."
+        puts
+        puts " Example:"
+        puts "   export SUBSCRIPTION_USERNAME='UserName' SUBSCRIPTION_PASSWORD='Password'"
+        puts
+        puts
+        exit 1
+      end
     end
   end
 
