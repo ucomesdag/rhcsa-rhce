@@ -1,6 +1,12 @@
 #!/bin/sh
 
-yum install -y ipa-client
+yum install -y ipa-client chrony
+
+# chrony is installed by default on the exam
+# this is a minimal installed server, so to
+# not add extra dificulty we enable it.
+systemctl enable chronyd
+systemctl start  chronyd
 
 while ! (echo > /dev/tcp/classroom/389) >/dev/null 2>&1; do
     echo "ipa server not ready yet - waiting for 10s"
