@@ -47,7 +47,9 @@ echo 'password' | ipa passwd linda
 ipa host-add server.example.com --ip-address=172.25.0.11
 ipa host-add desktop.example.com --ip-address=172.25.0.10
 ipa service-add nfs/server.example.com
+ipa service-add cifs/server.example.com
 ipa-getkeytab -s classroom.example.com -p nfs/server.example.com@EXAMPLE.COM -k /var/ftp/pub/server.keytab
+ipa-getkeytab -s classroom.example.com -p cifs/server.example.com@EXAMPLE.COM -k /var/ftp/pub/server.keytab
 ipa-getkeytab -s classroom.example.com -p host/server.example.com@EXAMPLE.COM -k /var/ftp/pub/server.keytab
 ipa-getkeytab -s classroom.example.com -p host/desktop.example.com@EXAMPLE.COM -k /var/ftp/pub/desktop.keytab
 

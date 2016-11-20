@@ -13,6 +13,7 @@ root            | redhat
 * ip: 172.25.0.254
 * ipa server: https://classroom.example.com
 * cert & keytabs: ftp://classroom.example.com
+    - server.keytab is configured for nfs and cifs
 * ipa administartor admin with password 'password'
 * user lisa with password 'password'
 * user linda with password 'password'
