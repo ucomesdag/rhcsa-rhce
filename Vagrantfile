@@ -29,6 +29,8 @@ Vagrant.configure(2) do |config|
     conname = "eth1"
     devname = "eth1"
     if Vagrant.has_plugin?('vagrant-registration')
+      now = Time.new
+      config.registration.name = "rhel-lab-" + now.strftime("%Y%m%d%H%M")
       if rh_user == "" or rh_passwd == ""
         config.registration.username = ENV['SUBSCRIPTION_USERNAME']
         config.registration.password = ENV['SUBSCRIPTION_PASSWORD']
@@ -74,7 +76,7 @@ Vagrant.configure(2) do |config|
   config.vm.define :classroom do |classroom_config|
     classroom_config.vm.hostname = "classroom.example.com"
     classroom_config.vm.network "private_network", ip: "172.25.0.254", auto_config: false
-    classroom_config.vm.provision :shell, run: "always", inline: "(nmcli device connect '#{devname}' &) && sleep 5 && nmcli con modify '#{conname}' ipv4.addresses 172.25.0.254/24 ipv4.dns 172.25.0.254,8.8.8.8 ipv4.route-metric 10 ipv4.method manual && nmcli con up '#{conname}'"
+    classroom_config.vm.provision :shell, run: "always", inline: "(nmcli device connect '#{devname}' &) && sleep 10 && nmcli con modify '#{conname}' ipv4.addresses 172.25.0.254/24 ipv4.dns 172.25.0.254,8.8.8.8 ipv4.route-metric 10 ipv4.method manual && nmcli con up '#{conname}'"
     classroom_config.vm.provision :shell, path: "scripts/classroom-provision"
     classroom_config.vm.provider "virtualbox" do |vbox, override|
       vbox.cpus = 1
@@ -89,7 +91,7 @@ Vagrant.configure(2) do |config|
   config.vm.define :server do |server_config|
     server_config.vm.hostname = "server.example.com"
     server_config.vm.network "private_network", ip: "172.25.0.11", auto_config: false
-    server_config.vm.provision :shell, run: "always", inline: "(nmcli device connect '#{devname}' &) && sleep 5 && nmcli con modify '#{conname}' ipv4.addresses 172.25.0.11/24 ipv4.gateway 172.25.0.254 ipv4.dns 172.25.0.254 ipv4.route-metric 10 ipv4.method manual && nmcli con up '#{conname}'"
+    server_config.vm.provision :shell, run: "always", inline: "(nmcli device connect '#{devname}' &) && sleep 10 && nmcli con modify '#{conname}' ipv4.addresses 172.25.0.11/24 ipv4.gateway 172.25.0.254 ipv4.dns 172.25.0.254 ipv4.route-metric 10 ipv4.method manual && nmcli con up '#{conname}'"
     server_config.vm.provision :shell, path: "scripts/server-provision"
     server_config.vm.provider "virtualbox" do |vbox, override|
       vbox.cpus = 1
@@ -109,7 +111,7 @@ Vagrant.configure(2) do |config|
   config.vm.define :desktop do |desktop_config|
     desktop_config.vm.hostname = "desktop.example.com"
     desktop_config.vm.network "private_network", ip: "172.25.0.10", auto_config: false
-    desktop_config.vm.provision :shell, run: "always", inline: "(nmcli device connect '#{devname}' &) && sleep 5 && nmcli con modify '#{conname}' ipv4.addresses 172.25.0.10/24 ipv4.gateway 172.25.0.254 ipv4.dns 172.25.0.254 ipv4.route-metric 10 ipv4.method manual && nmcli con up '#{conname}'"
+    desktop_config.vm.provision :shell, run: "always", inline: "(nmcli device connect '#{devname}' &) && sleep 10 && nmcli con modify '#{conname}' ipv4.addresses 172.25.0.10/24 ipv4.gateway 172.25.0.254 ipv4.dns 172.25.0.254 ipv4.route-metric 10 ipv4.method manual && nmcli con up '#{conname}'"
     desktop_config.vm.provision :shell, path: "scripts/desktop-provision"
     desktop_config.vm.provider "virtualbox" do |vbox, override|
       vbox.cpus = 1
