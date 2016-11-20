@@ -18,10 +18,11 @@ ipa-server-install \
     --ds-password=password \
     --admin-password=password \
     --hostname=classroom.example.com \
-    --setup-dns \
+    --ip-address=172.25.0.254 \
     --allow-zone-overlap \
+    --setup-dns \
     --forwarder=8.8.8.8 \
-    --reverse-zone=0.25.172.in-addr.arpa. \
+    --auto-reverse \
     --unattended
 
 for i in http https ldap ldaps kerberos kpasswd dns ntp; do
@@ -47,6 +48,7 @@ ipa host-add server.example.com --ip-address=172.25.0.11
 ipa host-add desktop.example.com --ip-address=172.25.0.10
 ipa service-add nfs/server.example.com
 ipa-getkeytab -s classroom.example.com -p nfs/server.example.com@EXAMPLE.COM -k /var/ftp/pub/server.keytab
+ipa-getkeytab -s classroom.example.com -p host/server.example.com@EXAMPLE.COM -k /var/ftp/pub/server.keytab
 ipa-getkeytab -s classroom.example.com -p host/desktop.example.com@EXAMPLE.COM -k /var/ftp/pub/desktop.keytab
 
 chmod +r /var/ftp/pub/*.keytab
