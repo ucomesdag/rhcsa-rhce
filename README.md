@@ -15,11 +15,12 @@ root            | redhat
 * cert & keytabs: ftp://classroom.example.com
     - server.keytab is configured for nfs and cifs
 * ipa administartor admin with password 'password'
-* user lisa with password 'password'
-* user linda with password 'password'
+* ipa user lisa with password 'password'
+* ipa user linda with password 'password'
 
 #### server.example.com
 * ip: 172.25.0.11
+* minimal server
 * with an extra 10 GiB unpartitioned drive
 * added as an ipa-client to the realm EXAMPLE.COM
 
