@@ -6,7 +6,7 @@ This will create 3 VM's with, besides the vagrant user, the following users:
 
 User            | Password
 ----------------|--------
-student (wheel) | password
+student (wheel) | student
 root            | redhat
 
 #### classroom.example.com
