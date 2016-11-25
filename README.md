@@ -21,6 +21,8 @@ root            | redhat
 #### server.example.com
 * ip: 172.25.0.11
 * minimal server
+* with an extra NIC for teaming
+    - ip: 172.25.0.12
 * with an extra 10 GiB unpartitioned drive
 * added as an ipa-client to the realm EXAMPLE.COM
 

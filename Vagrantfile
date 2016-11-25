@@ -92,6 +92,7 @@ Vagrant.configure(2) do |config|
     server_config.vm.hostname = "server.example.com"
     server_config.vm.network "private_network", ip: "172.25.0.11", auto_config: false
     server_config.vm.provision :shell, run: "always", inline: "(nmcli device connect '#{devname}' &) && sleep 10 && nmcli con modify '#{conname}' ipv4.addresses 172.25.0.11/24 ipv4.gateway 172.25.0.254 ipv4.dns 172.25.0.254 ipv4.route-metric 10 ipv4.method manual && nmcli con up '#{conname}'"
+    server_config.vm.network "private_network", ip: "172.25.0.12", auto_config: false
     server_config.vm.provision :shell, path: "scripts/server-provision"
     server_config.vm.provider "virtualbox" do |vbox, override|
       vbox.cpus = 1
