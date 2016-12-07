@@ -20,7 +20,7 @@ Vagrant.configure(2) do |config|
   extra_disk_size = 2 # Recommended: 10 GiB / Minimum: 2 GiB
 
   # VM guest configuration
-  config.vm.box = "rhel/7.2" # Use centos/7 or the label you used when adding the downloaded rhel box, for expl: rhel/7.2
+  config.vm.box = "centos/7" # Use centos/7 or the label you used when adding the downloaded rhel box, for expl: rhel/7.2
 
   # Don't modify beyond here
   conname = "Wired connection 1"
@@ -31,14 +31,13 @@ Vagrant.configure(2) do |config|
     if Vagrant.has_plugin?('vagrant-registration')
       now = Time.new
       config.registration.name = "rhel-lab-" + now.strftime("%Y%m%d%H%M")
-      if rh_user == "" or rh_passwd == ""
+      if ENV['SUBSCRIPTION_USERNAME'] || ENV['SUBSCRIPTION_PASSWORD']
         config.registration.username = ENV['SUBSCRIPTION_USERNAME']
         config.registration.password = ENV['SUBSCRIPTION_PASSWORD']
-      else
+      elsif rh_user != "" && rh_passwd != ""
         config.registration.username = rh_user
         config.registration.password = rh_passwd
-      end
-      if ! config.registration.username or ! config.registration.password
+      else
         puts "+-----------------------------------------------------------------------------+"
         puts "|    The VM guest is set to a RHEL box, to continue a Red Hat subscription    |"
         puts "|                               is required !!!                               |"
@@ -53,18 +52,28 @@ Vagrant.configure(2) do |config|
         puts
         exit 1
       end
+    else
+      puts "+-----------------------------------------------------------------------------+"
+      puts "|    The VM guest is set to a RHEL box, but the vagrant-registration plugin   |"
+      puts "|                             is not installed !!!                            |"
+      puts "+-----------------------------------------------------------------------------+"
+      puts
+      puts " Please install the vagrant-registration plugin that comes with the"
+      puts " \"Red Hat Container Tools\"."
+      puts
+      exit 1
     end
   end
 
   config.vm.provider "virtualbox" do |vbox, override|
     # vbox.gui = true
-    if vbox_vm_path == ""
+    if ENV['VBOX_VM_PATH']
       vbox_vm_path = ENV['VBOX_VM_PATH']
     end
   end
 
   config.vm.provider "libvirt" do |libvirt, override|
-    if libvirt_storage_pool == ""
+    if ENV['LIBVIRT_STORAGE_POOL']
       libvirt_storage_pool = ENV['LIBVIRT_STORAGE_POOL']
     end
     libvirt.driver = "kvm"
