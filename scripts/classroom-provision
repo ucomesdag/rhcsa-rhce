@@ -5,12 +5,13 @@ systemctl start firewalld
 
 firewall-cmd --add-masquerade --permanent; firewall-cmd --reload
 
-echo "172.25.0.254 classroom.example.com classroom" > /etc/hosts
-
 yum install -y ipa-server ipa-server-dns
 
 yum install -y rng-tools
 rngd -r /dev/urandom
+
+sed -i /.*classroom.*/d /etc/hosts
+echo "172.25.0.254 classroom.example.com classroom" >> /etc/hosts
 
 ipa-server-install \
     --domain=example.com \
@@ -19,10 +20,9 @@ ipa-server-install \
     --admin-password=password \
     --hostname=classroom.example.com \
     --ip-address=172.25.0.254 \
-    --allow-zone-overlap \
+    --reverse-zone=0.25.172.in-addr.arpa. \
+    --forwarder=208.67.222.222 \
     --setup-dns \
-    --forwarder=8.8.8.8 \
-    --auto-reverse \
     --unattended
 
 for i in http https ldap ldaps kerberos kpasswd dns ntp; do
