@@ -60,17 +60,17 @@ vagrant up
 ### RHEL version:
 _Note: The rhel version requires an active subscription._
 
-Download both the **RHEL 7.2 Vagrant box for libvirt or VirtualBox** and the **Red Hat Container Tools** from [access.redhat.com][2].
+Download both the **RHEL 7.3 Vagrant box for libvirt or VirtualBox** and the **Red Hat Container Tools** from [access.redhat.com][2].
 ```
 unzip cdk-*.zip && cd cdk/plugins
 vagrant plugin install vagrant-registration
-vagrant box add rhel/7.2 file://rhel-cdk-kubernetes-*.vagrant-*.box
+vagrant box add rhel/7.3 file://rhel-cdk-kubernetes-*.vagrant-*.box
 export SUBSCRIPTION_USERNAME='foo' SUBSCRIPTION_PASSWORD='bar'
 cd rhel-lab
 vagrant up
 ```
 
 [1]: http://www.sandervanvugt.com/books/ "Red Hat RHCE/RHCSA 7 Cert Guide"
-[2]: https://access.redhat.com/downloads/content/293/ver=2/rhel---7/2.0.0/x86_64/product-software "access.redhat.com"
+[2]: https://access.redhat.com/downloads/content/293/ver=2.4/rhel---7/2.4.0/x86_64/product-software "access.redhat.com"
 
 ---
