@@ -21,7 +21,7 @@ ipa-server-install \
     --hostname=classroom.example.com \
     --ip-address=172.25.0.254 \
     --reverse-zone=0.25.172.in-addr.arpa. \
-    --forwarder=208.67.222.222 \
+    --forwarder=1.1.1.1 \
     --allow-zone-overlap \
     --setup-dns \
     --unattended

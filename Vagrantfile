@@ -9,10 +9,6 @@ Vagrant.configure(2) do |config|
   # Storage pool where the extra disks should be stored when using libVirt
   libvirt_storage_pool = "" # libVirt ONLY!
 
-  # Red Hat subscription credentials if you choose to use a RHEL box.
-  rh_user   = ""
-  rh_passwd = ""
-
   # Memory configuration
   classroom_memory = 2048 # Recommended: 2048 MiB / Minimum: 512 MiB
   server_memory = 1024 # Recommended: 1024 MiB / Minimum: 512 MiB
@@ -20,50 +16,11 @@ Vagrant.configure(2) do |config|
   extra_disk_size = 2 # Recommended: 10 GiB / Minimum: 2 GiB
 
   # VM guest configuration
-  config.vm.box = "centos/7" # Use centos/7 or the label you used when adding the downloaded rhel box, for expl: rhel/7.2
+  config.vm.box = "centos/7"
 
   # Don't modify beyond here
   conname = "Wired connection 1"
   devname = "eth1"
-  if config.vm.box =~ /^rhel\/.*$/
-    conname = "eth1"
-    devname = "eth1"
-    if Vagrant.has_plugin?('vagrant-registration')
-      now = Time.new
-      config.registration.name = "rhel-lab-" + now.strftime("%Y%m%d%H%M")
-      if ENV['SUBSCRIPTION_USERNAME'] || ENV['SUBSCRIPTION_PASSWORD']
-        config.registration.username = ENV['SUBSCRIPTION_USERNAME']
-        config.registration.password = ENV['SUBSCRIPTION_PASSWORD']
-      elsif rh_user != "" && rh_passwd != ""
-        config.registration.username = rh_user
-        config.registration.password = rh_passwd
-      else
-        puts "+-----------------------------------------------------------------------------+"
-        puts "|    The VM guest is set to a RHEL box, to continue a Red Hat subscription    |"
-        puts "|                               is required !!!                               |"
-        puts "+-----------------------------------------------------------------------------+"
-        puts
-        puts " You can use the environment variables 'SUBSCRIPTION_USERNAME' and"
-        puts " 'SUBSCRIPTION_PASSWORD' to set your credentials."
-        puts
-        puts " Example:"
-        puts "   export SUBSCRIPTION_USERNAME='UserName' SUBSCRIPTION_PASSWORD='Password'"
-        puts
-        puts
-        exit 1
-      end
-    else
-      puts "+-----------------------------------------------------------------------------+"
-      puts "|    The VM guest is set to a RHEL box, but the vagrant-registration plugin   |"
-      puts "|                             is not installed !!!                            |"
-      puts "+-----------------------------------------------------------------------------+"
-      puts
-      puts " Please install the vagrant-registration plugin that comes with the"
-      puts " \"Red Hat Container Tools\"."
-      puts
-      exit 1
-    end
-  end
 
   config.vm.provider "virtualbox" do |vbox, override|
     # vbox.gui = true
@@ -88,6 +45,7 @@ Vagrant.configure(2) do |config|
     classroom_config.vm.provision :shell, run: "always", inline: "(nmcli device connect '#{devname}' &) && sleep 10 && nmcli con modify '#{conname}' ipv4.addresses 172.25.0.254/24 ipv4.dns 172.25.0.254,8.8.8.8 ipv4.route-metric 10 ipv4.method manual && nmcli con up '#{conname}'"
     classroom_config.vm.provision :shell, path: "scripts/classroom-provision"
     classroom_config.vm.provider "virtualbox" do |vbox, override|
+      vbox.name = classroom_config.vm.hostname
       vbox.cpus = 1
       vbox.memory = classroom_memory
     end
@@ -104,6 +62,7 @@ Vagrant.configure(2) do |config|
     server_config.vm.network "private_network", ip: "172.25.0.12", auto_config: false
     server_config.vm.provision :shell, path: "scripts/server-provision"
     server_config.vm.provider "virtualbox" do |vbox, override|
+      vbox.name = server_config.vm.hostname
       vbox.cpus = 1
       vbox.memory = server_memory
       if !File.exist?(vbox_vm_path + 'rhel_server_2.vdi')
@@ -124,6 +83,7 @@ Vagrant.configure(2) do |config|
     desktop_config.vm.provision :shell, run: "always", inline: "(nmcli device connect '#{devname}' &) && sleep 10 && nmcli con modify '#{conname}' ipv4.addresses 172.25.0.10/24 ipv4.gateway 172.25.0.254 ipv4.dns 172.25.0.254 ipv4.route-metric 10 ipv4.method manual && nmcli con up '#{conname}'"
     desktop_config.vm.provision :shell, path: "scripts/desktop-provision"
     desktop_config.vm.provider "virtualbox" do |vbox, override|
+      vbox.name = desktop_config.vm.hostname
       vbox.cpus = 1
       vbox.memory = desktop_memory
       if !File.exist?(vbox_vm_path + 'rhel_desktop_2.vdi')
