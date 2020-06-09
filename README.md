@@ -14,7 +14,7 @@ root            | redhat
 * ipa server: https://classroom.example.com
 * cert & keytabs: ftp://classroom.example.com
     - server.keytab is configured for nfs and cifs
-* ipa administartor admin with password 'password'
+* ipa administrator admin with password 'password'
 * ipa user lisa with password 'password'
 * ipa user linda with password 'password'
 
@@ -35,9 +35,14 @@ root            | redhat
 * Vagrant
 * libvirt or VirtualBox
 * atleast 4 GiB free memory (with recommended settings)
-* atleast 20 GiB free storage  (with recommended settings)
+* atleast 20 GiB free storage (with recommended settings)
 
 ## Install
+
+```
+cd rhel-lab
+vagrant up
+```
 
 To be able to access the ipa interface at `https://classroom.example.com` you will need to modify your hosts file:
 
@@ -47,15 +52,7 @@ echo '172.25.0.254 classroom.example.com classroom' >> /etc/hosts
 
 Or else acces it via the GUI on the VM `desktop.example.com`
 
-Edit the `Vagrantfile` and modify `config.vm.box`.
-
-Also the following environment variables can be set instead of editing the `Vagrantfile`: `VBOX_VM_PATH`, `LIBVIRT_STORAGE_POOL` 
-  
-   
-```
-cd rhel-lab
-vagrant up
-```
+The following environment variables can be set instead of editing the `Vagrantfile`: `VBOX_VM_PATH`, `LIBVIRT_STORAGE_POOL`   
 
 [1]: http://www.sandervanvugt.com/books/ "Red Hat RHCE/RHCSA 7 Cert Guide"
 
