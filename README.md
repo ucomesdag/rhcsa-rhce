@@ -40,8 +40,9 @@ root            | redhat
 ## Install
 
 ```
-cd rhel-lab
+cd rhcsa-rhce
 vagrant up
+vagrant status
 ```
 
 To be able to access the ipa interface at `https://classroom.example.com` you will need to modify your hosts file:
